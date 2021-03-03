@@ -24,6 +24,7 @@ import org.geektimes.projects.user.repository.UserRepository;
 import org.geektimes.projects.user.service.UserService;
 
 import java.sql.SQLException;
+import java.util.Collection;
 
 /**
  * @author lw1243925457
@@ -62,7 +63,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Collection<User> getAll() {
+        return  userRepository.getAll();
+    }
+
+    @Override
     public User queryUserByNameAndPassword(String name, String password) {
         return null;
     }
+
 }

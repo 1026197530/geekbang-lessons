@@ -14,29 +14,32 @@ import java.util.Collection;
 /**
  * 输出 “Hello,World” Controller
  */
-@Path("/register")
-public class RegisterController implements PageController {
+@Path("/login")
+public class loginController implements PageController {
 
     private UserService userService = new UserServiceImpl();
 
     @Override
     @POST
     public String execute(HttpServletRequest request, HttpServletResponse response) throws Throwable {
-        String user = request.getParameter("user");
+
+//        String user = request.getParameter("user");
         String password = request.getParameter("password");
         String email = request.getParameter("email");
         String phoneNumber = request.getParameter("phoneNumber");
-        System.out.printf("user: %s, password: %s\n", user, password);
+        System.out.printf("password: %s, email: %s\n", password, email);
+//        if (user == null || password == null) {
+//            return "register.jsp";
+//        }
+        Collection<User> all = userService.getAll();
 
-        if (user == null || password == null) {
-            return "register.jsp";
+        for (User userTmp:all){
+            System.out.println("111|||||"+userTmp.toString());
+            if (userTmp.getEmail().equals(email) && userTmp.getPassword().equals(password)){
+                return "success.jsp";
+            }
         }
 
-        if (userService.register(new User(user, password, email, phoneNumber))) {
-//            return "login.jsp";
-            return "login-form.jsp";
-        }
         return "failed.jsp";
     }
-
 }

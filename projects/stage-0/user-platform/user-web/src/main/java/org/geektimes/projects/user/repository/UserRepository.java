@@ -2,6 +2,7 @@ package org.geektimes.projects.user.repository;
 
 import org.geektimes.projects.user.domain.User;
 import org.geektimes.projects.user.sql.Insert;
+import org.geektimes.projects.user.sql.Select;
 
 import java.util.Collection;
 import java.util.List;
@@ -23,5 +24,6 @@ public interface UserRepository {
 
     User getByNameAndPassword(String userName, String password);
 
+    @Select(value = "select * from users", returnType = "org.geektimes.projects.user.domain.User")
     Collection<User> getAll();
 }

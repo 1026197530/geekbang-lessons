@@ -6,6 +6,6 @@
 <body>
 <div class="container-lg">
     <!-- Content here -->
-    注册成功
+    登录成功
 </div>
 </body>

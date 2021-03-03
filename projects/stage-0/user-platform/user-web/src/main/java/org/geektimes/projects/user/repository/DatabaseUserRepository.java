@@ -1,10 +1,11 @@
 package org.geektimes.projects.user.repository;
 
-import com.sun.org.apache.bcel.internal.generic.Select;
+
 import org.geektimes.function.ThrowableFunction;
 import org.geektimes.projects.user.domain.User;
 import org.geektimes.projects.user.sql.DBConnectionManager;
 import org.geektimes.projects.user.sql.Insert;
+import org.geektimes.projects.user.sql.Select;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -225,7 +226,41 @@ public class DatabaseUserRepository implements UserRepository, InvocationHandler
     private static String mapColumnLabel(String fieldName) {
         return fieldName;
     }
+    private Object executeQuerySql(String querySql, String returnType) throws SQLException, ClassNotFoundException, IllegalAccessException, IntrospectionException, NoSuchMethodException, InvocationTargetException, InstantiationException {
+        List<Object> result = new ArrayList<>();
 
+        Connection connection = getConnection();
+        Statement statement = connection.createStatement();
+
+        ResultSet res = statement.executeQuery(querySql);
+        // BeanInfo
+        BeanInfo userBeanInfo = Introspector.getBeanInfo(Class.forName(returnType), Object.class);
+
+        while (res.next()) {
+            Object object = Class.forName(returnType).newInstance();
+            for (PropertyDescriptor propertyDescriptor : userBeanInfo.getPropertyDescriptors()) {
+                String fieldName = propertyDescriptor.getName();
+                Class fieldType = propertyDescriptor.getPropertyType();
+                String methodName = resultSetMethodMappings.get(fieldType);
+                // 可能存在映射关系（不过此处是相等的）
+                String columnLabel = fieldName;
+                Method resultSetMethod = ResultSet.class.getMethod(methodName, String.class);
+                // 通过放射调用 getXXX(String) 方法
+                Object resultValue = resultSetMethod.invoke(res, columnLabel);
+                // 获取 User 类 Setter方法
+                // PropertyDescriptor ReadMethod 等于 Getter 方法
+                // PropertyDescriptor WriteMethod 等于 Setter 方法
+                Method setterMethodFromUser = propertyDescriptor.getWriteMethod();
+                // 以 id 为例，  user.setId(resultSet.getLong("id"));
+                setterMethodFromUser.invoke(object, resultValue);
+            }
+            result.add(object);
+
+            System.out.println(object.toString());
+        }
+        statement.close();
+        return result;
+    }
     /**
      * 数据类型与 ResultSet 方法名映射
      */
@@ -259,10 +294,11 @@ public class DatabaseUserRepository implements UserRepository, InvocationHandler
                 }
 
                 if (annotation instanceof Select) {
-
-//                        return executeQuerySql(((Select) annotation).value(), ((Select) annotation).returnType());
-                        return getAll();
-
+                    try {
+                        return executeQuerySql(((Select) annotation).value(), ((Select) annotation).returnType());
+                    } catch (SQLException | ClassNotFoundException | IllegalAccessException | IntrospectionException | NoSuchMethodException | InvocationTargetException | InstantiationException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
             return true;
