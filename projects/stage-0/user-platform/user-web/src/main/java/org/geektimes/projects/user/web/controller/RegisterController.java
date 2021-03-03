@@ -31,7 +31,8 @@ public class RegisterController implements PageController {
         }
 
         if (userService.register(new User(user, password, email, phoneNumber))) {
-            return "login.jsp";
+//            return "login.jsp";
+            return "login-form.jsp";
         }
         return "failed.jsp";
     }
