@@ -17,11 +17,19 @@ public class DBConnectionManager {
     private Connection connection;
 
     public void setConnection(Connection connection) {
+
         this.connection = connection;
     }
 
-    public Connection getConnection() {
-        return this.connection;
+    public Connection getConnection()  {
+        String databaseURL ="jdbc:derby:TEST/db/user-platform;create=true";
+        Connection connection = null;
+        try {
+            connection = DriverManager.getConnection(databaseURL);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return connection;
     }
 
     public void releaseConnection() {
@@ -60,7 +68,8 @@ public class DBConnectionManager {
 //        Driver driver = DriverManager.getDriver("jdbc:derby:/db/user-platform;create=true");
 //        Connection connection = driver.connect("jdbc:derby:/db/user-platform;create=true", new Properties());
 
-        String databaseURL = "jdbc:derby:/db/user-platform;create=true";
+//      String databaseURL = "jdbc:derby:/db/user-platform;create=true";
+        String databaseURL ="jdbc:derby:TEST/db/user-platform;create=true";
         Connection connection = DriverManager.getConnection(databaseURL);
 
         Statement statement = connection.createStatement();

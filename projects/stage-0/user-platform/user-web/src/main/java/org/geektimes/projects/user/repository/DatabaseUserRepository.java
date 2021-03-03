@@ -1,12 +1,19 @@
 package org.geektimes.projects.user.repository;
 
+import com.sun.org.apache.bcel.internal.generic.Select;
 import org.geektimes.function.ThrowableFunction;
 import org.geektimes.projects.user.domain.User;
 import org.geektimes.projects.user.sql.DBConnectionManager;
+import org.geektimes.projects.user.sql.Insert;
 
 import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.*;
 import java.util.*;
@@ -16,7 +23,7 @@ import java.util.logging.Logger;
 
 import static org.apache.commons.lang.ClassUtils.wrapperToPrimitive;
 
-public class DatabaseUserRepository implements UserRepository {
+public class DatabaseUserRepository implements UserRepository, InvocationHandler {
 
     private static Logger logger = Logger.getLogger(DatabaseUserRepository.class.getName());
 
@@ -28,7 +35,13 @@ public class DatabaseUserRepository implements UserRepository {
     public static final String INSERT_USER_DML_SQL =
             "INSERT INTO users(name,password,email,phoneNumber) VALUES " +
                     "(?,?,?,?)";
-
+    public static final String CREATE_USERS_TABLE_DDL_SQL = "CREATE TABLE users(" +
+            "id INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
+            "name VARCHAR(16) NOT NULL, " +
+            "password VARCHAR(64) NOT NULL, " +
+            "email VARCHAR(64) NOT NULL, " +
+            "phoneNumber VARCHAR(64) NOT NULL" +
+            ")";
     public static final String QUERY_ALL_USERS_DML_SQL = "SELECT id,name,password,email,phoneNumber FROM users";
 
     private final DBConnectionManager dbConnectionManager;
@@ -38,12 +51,24 @@ public class DatabaseUserRepository implements UserRepository {
     }
 
     private Connection getConnection() {
-        return dbConnectionManager.getConnection();
+        String databaseURL ="jdbc:derby:TEST/db/user-platform;create=true";
+        Connection connection = null;
+        try {
+            connection = DriverManager.getConnection(databaseURL);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return connection;
     }
 
     @Override
     public boolean save(User user) {
         return false;
+//        return executeQuery(INSERT_USER_DML_SQL, resultSet -> {
+//            // TODO
+//            return true;}, COMMON_EXCEPTION_HANDLER, user);
+
     }
 
     @Override
@@ -72,6 +97,8 @@ public class DatabaseUserRepository implements UserRepository {
 
     @Override
     public Collection<User> getAll() {
+        System.out.println("execute insert: " + "SELECT id,name,password,email,phoneNumber FROM users");
+
         return executeQuery("SELECT id,name,password,email,phoneNumber FROM users", resultSet -> {
             // BeanInfo -> IntrospectionException
             BeanInfo userBeanInfo = Introspector.getBeanInfo(User.class, Object.class);
@@ -93,8 +120,10 @@ public class DatabaseUserRepository implements UserRepository {
                     Method setterMethodFromUser = propertyDescriptor.getWriteMethod();
                     // 以 id 为例，  user.setId(resultSet.getLong("id"));
                     setterMethodFromUser.invoke(user, resultValue);
+                    System.out.println(user.toString());
                 }
             }
+
             return users;
         }, e -> {
             // 异常处理
@@ -136,7 +165,62 @@ public class DatabaseUserRepository implements UserRepository {
         }
         return null;
     }
+    private Object executeInsertSql(String sqlTemplate, Object[] args) throws IllegalAccessException, SQLException {
+        System.out.println("execute insert: " + sqlTemplate);
+        StringBuilder cols = new StringBuilder();
+        StringBuilder values = new StringBuilder();
 
+        Object data = args[0];
+        Field[] fields = data.getClass().getDeclaredFields();
+        for (Field field: fields) {
+            if (field.get(data) == null) {
+                continue;
+            }
+            cols.append(field.getName()).append(",");
+            String sp= field.get(data).toString();
+            sp="'"+sp+"'";
+            values.append(sp+",");
+        }
+
+        String sql = String.format(sqlTemplate, cols.toString().substring(0,cols.length()-1), values.toString().substring(0,values.length()-1));
+        System.out.println("sql string: " + sql);
+
+//        Connection conn = database.getConnection();
+        Connection connection = getConnection();
+        Statement statement = connection.createStatement();
+//        statement.execute("")
+        DatabaseMetaData meta = connection.getMetaData();
+        ResultSet resq = meta.getTables(null, null, null, new String[]{"TABLE"});
+        HashSet<String> set=new HashSet<String>();
+
+        while (resq.next()) {
+            System.out.println("sql string: " + resq.getString("TABLE_NAME"));
+            set.add(resq.getString("TABLE_NAME"));
+        }
+        System.out.println(set);
+        if(!set.contains("users".toUpperCase())){
+            statement.execute(CREATE_USERS_TABLE_DDL_SQL);
+        }
+
+
+        statement.execute(sql);
+
+//        String querySql = "select * from users";
+        Collection<User> all = getAll();
+//        ResultSet res = statement.executeQuery(querySql);
+//        while (res.next()) {
+//            System.out.println(res.toString());
+//        }
+     for (User user:all){
+                     System.out.println(user.toString());
+
+     }
+
+
+        statement.close();
+
+        return true;
+    }
 
     private static String mapColumnLabel(String fieldName) {
         return fieldName;
@@ -158,4 +242,30 @@ public class DatabaseUserRepository implements UserRepository {
 
 
     }
+
+
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) {
+            Annotation[] annotations = method.getDeclaredAnnotations();
+            for (Annotation annotation: annotations) {
+                if (annotation instanceof Insert) {
+                    try {
+                        return executeInsertSql(((Insert) annotation).value(), args);
+                    } catch (IllegalAccessException | SQLException e) {
+                        e.printStackTrace();
+                        return false;
+                    }
+//                    save(args);
+                }
+
+                if (annotation instanceof Select) {
+
+//                        return executeQuerySql(((Select) annotation).value(), ((Select) annotation).returnType());
+                        return getAll();
+
+                }
+            }
+            return true;
+        }
+
 }

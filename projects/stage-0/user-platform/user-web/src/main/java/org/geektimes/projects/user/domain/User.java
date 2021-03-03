@@ -9,15 +9,23 @@ import java.util.Objects;
  */
 public class User {
 
-    private Long id;
+    public Long id;
 
-    private String name;
+    public String name;
 
-    private String password;
+    public String password;
 
-    private String email;
+    public String email;
 
-    private String phoneNumber;
+    public String phoneNumber;
+
+    public User(String user, String password, String email, String phoneNumber) {
+        this.name = user;
+        this.password = password;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+    }
+    public User() {}
 
     public Long getId() {
         return id;
