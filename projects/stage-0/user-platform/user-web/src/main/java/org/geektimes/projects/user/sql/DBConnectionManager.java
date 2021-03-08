@@ -2,44 +2,104 @@ package org.geektimes.projects.user.sql;
 
 import org.geektimes.projects.user.domain.User;
 
+import javax.annotation.Resource;
+import javax.persistence.EntityManager;
+import javax.sql.DataSource;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
+// <<<<<<< HEAD
+// import java.util.Properties;
 
-public class DBConnectionManager {
+// public class DBConnectionManager {
 
-    private Connection connection;
+//     private Connection connection;
 
-    public void setConnection(Connection connection) {
+//     public void setConnection(Connection connection) {
 
-        this.connection = connection;
+//         this.connection = connection;
+//     }
+
+//     public Connection getConnection()  {
+//         String databaseURL ="jdbc:derby:TEST/db/user-platform;create=true";
+//         Connection connection = null;
+//         try {
+//             connection = DriverManager.getConnection(databaseURL);
+//         } catch (SQLException throwables) {
+//             throwables.printStackTrace();
+// =======
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class DBConnectionManager { // JNDI Component
+
+    private final Logger logger = Logger.getLogger(DBConnectionManager.class.getName());
+
+    @Resource(name = "jdbc/UserPlatformDB")
+    private DataSource dataSource;
+
+    @Resource(name = "bean/EntityManager")
+    private EntityManager entityManager;
+
+//    public Connection getConnection() {
+//        ComponentContext context = ComponentContext.getInstance();
+//        // 依赖查找
+//        DataSource dataSource = context.getComponent("jdbc/UserPlatformDB");
+//        Connection connection = null;
+//        try {
+//            connection = dataSource.getConnection();
+//        } catch (SQLException e) {
+//            logger.log(Level.SEVERE, e.getMessage());
+//        }
+//        if (connection != null) {
+//            logger.log(Level.INFO, "获取 JNDI 数据库连接成功！");
+//        }
+//        return connection;
+//    }
+
+    public EntityManager getEntityManager() {
+        logger.info("当前 EntityManager 实现类：" + entityManager.getClass().getName());
+        return entityManager;
     }
 
-    public Connection getConnection()  {
-        String databaseURL ="jdbc:derby:TEST/db/user-platform;create=true";
+    public Connection getConnection() {
+        // 依赖查找
         Connection connection = null;
         try {
-            connection = DriverManager.getConnection(databaseURL);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            connection = dataSource.getConnection();
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+        }
+        if (connection != null) {
+            logger.log(Level.INFO, "获取 JNDI 数据库连接成功！");
+// >>>>>>> upstream/master
         }
         return connection;
     }
 
+
+//    private Connection connection;
+//
+//    public void setConnection(Connection connection) {
+//        this.connection = connection;
+//    }
+//
+//    public Connection getConnection() {
+//        return this.connection;
+//    }
+
     public void releaseConnection() {
-        if (this.connection != null) {
-            try {
-                this.connection.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e.getCause());
-            }
-        }
+//        if (this.connection != null) {
+//            try {
+//                this.connection.close();
+//            } catch (SQLException e) {
+//                throw new RuntimeException(e.getCause());
+//            }
+//        }
     }
 
     public static final String DROP_USERS_TABLE_DDL_SQL = "DROP TABLE users";
@@ -163,4 +223,5 @@ public class DBConnectionManager {
         typeMethodMappings.put(Long.class, "getLong");
         typeMethodMappings.put(String.class, "getString");
     }
+
 }

@@ -1,31 +1,61 @@
 package org.geektimes.projects.user.domain;
 
+import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Objects;
+
+import static javax.persistence.GenerationType.AUTO;
 
 /**
  * 用户领域对象
  *
  * @since 1.0
  */
-public class User {
+@Entity
+@Table(name = "users")
+public class User implements Serializable {
 
-    public Long id;
+// <<<<<<< HEAD
+//     public Long id;
 
-    public String name;
+//     public String name;
 
-    public String password;
+//     public String password;
 
-    public String email;
+//     public String email;
 
-    public String phoneNumber;
+//     public String phoneNumber;
 
-    public User(String user, String password, String email, String phoneNumber) {
-        this.name = user;
-        this.password = password;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-    }
-    public User() {}
+//     public User(String user, String password, String email, String phoneNumber) {
+//         this.name = user;
+//         this.password = password;
+//         this.email = email;
+//         this.phoneNumber = phoneNumber;
+//     }
+//     public User() {}
+// =======
+    @Id
+    @GeneratedValue(strategy = AUTO)
+    @NotNull
+    private Long id;
+
+    @Column
+    private String name;
+
+    @Column
+    @Max(32)
+    @Min(6)
+    private String password;
+
+    @Column
+    private String email;
+
+    @Column
+    private String phoneNumber;
+// >>>>>>> upstream/master
 
     public Long getId() {
         return id;
