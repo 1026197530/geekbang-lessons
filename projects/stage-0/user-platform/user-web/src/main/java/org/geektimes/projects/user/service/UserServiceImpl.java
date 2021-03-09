@@ -6,6 +6,7 @@ import org.geektimes.projects.user.sql.LocalTransactional;
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.validation.Validator;
+import java.util.Collection;
 
 public class UserServiceImpl implements UserService {
 
@@ -69,6 +70,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User queryUserById(Long id) {
+        return null;
+    }
+
+    @Override
+    public Collection<User> getAll() {
         return null;
     }
 
