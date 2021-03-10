@@ -1,9 +1,15 @@
 package org.geektimes.projects.user.domain;
 
+import org.geektimes.projects.user.orm.jpa.JpaDemo;
+
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+//import javax.validation.constraints.Max;
+//import javax.validation.constraints.Min;
+//import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -39,21 +45,23 @@ public class User implements Serializable {
 // =======
     @Id
     @GeneratedValue(strategy = AUTO)
-    @NotNull
+    @NotNull(groups={JpaDemo.class})
+    @Min(0)
     private Long id;
 
     @Column
     private String name;
 
     @Column
-    @Max(32)
-    @Min(6)
+    @NotNull
+    @Pattern(regexp = "^.{6,32}$", message = "密码格式错误")
     private String password;
 
     @Column
     private String email;
 
     @Column
+    @Pattern(regexp = "^[1][3,4,5,6,7,8,9][0-9]{9}$", message = "手机号格式有误")
     private String phoneNumber;
 // >>>>>>> upstream/master
 

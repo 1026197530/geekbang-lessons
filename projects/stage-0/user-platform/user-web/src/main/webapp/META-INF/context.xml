@@ -20,7 +20,7 @@
               maxActive="100" maxIdle="30" maxWait="10000"
               username="" password="" 
               driverClassName="org.apache.derby.jdbc.EmbeddedDriver"
-              url="jdbc:derby:/db/user-platform;create=true"/>
+              url="jdbc:derby:TEST/db/user-platform;create=true"/>
 
 	<!-- FactoryBean -->
 	<Resource name="bean/DBConnectionManager" auth="Container"
@@ -44,5 +44,8 @@
 	<Resource name="bean/UserService" auth="Container"
 			  type="org.geektimes.projects.user.service.UserServiceImpl"
 			  factory="org.apache.naming.factory.BeanFactory" />
-
+	<Resource name="bean/DatabaseUserRepository"
+			  auth="Container"
+			  type="org.geektimes.projects.user.repository.DatabaseUserRepository"
+			  factory="org.apache.naming.factory.BeanFactory"/>
 </Context>

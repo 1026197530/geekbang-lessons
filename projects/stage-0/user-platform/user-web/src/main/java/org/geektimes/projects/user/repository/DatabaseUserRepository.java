@@ -8,6 +8,7 @@ import org.geektimes.projects.user.sql.DBConnectionManager;
 import org.geektimes.projects.user.sql.Insert;
 import org.geektimes.projects.user.sql.Select;
 
+import javax.annotation.Resource;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -28,7 +29,8 @@ import static org.apache.commons.lang.ClassUtils.wrapperToPrimitive;
 public class DatabaseUserRepository implements UserRepository, InvocationHandler {
 
     private static Logger logger = Logger.getLogger(DatabaseUserRepository.class.getName());
-
+    @Resource(name = "bean/DBConnectionManager")
+    private DBConnectionManager dbConnectionManager;
     /**
      * 通用处理方式
      */
@@ -46,7 +48,7 @@ public class DatabaseUserRepository implements UserRepository, InvocationHandler
             ")";
     public static final String QUERY_ALL_USERS_DML_SQL = "SELECT id,name,password,email,phoneNumber FROM users";
 
-    private final DBConnectionManager dbConnectionManager;
+//    private final DBConnectionManager dbConnectionManager;
 
     public DatabaseUserRepository() {
         this.dbConnectionManager = ComponentContext.getInstance().getComponent("bean/DBConnectionManager");
@@ -66,10 +68,13 @@ public class DatabaseUserRepository implements UserRepository, InvocationHandler
 
     @Override
     public boolean save(User user) {
-        return false;
-//        return executeQuery(INSERT_USER_DML_SQL, resultSet -> {
-//            // TODO
-//            return true;}, COMMON_EXCEPTION_HANDLER, user);
+//        return false;
+////        return executeQuery(INSERT_USER_DML_SQL, resultSet -> {
+////            // TODO
+////            return true;}, COMMON_EXCEPTION_HANDLER, user);
+
+            dbConnectionManager.getEntityManager().persist(user);
+            return true;
 
     }
 
