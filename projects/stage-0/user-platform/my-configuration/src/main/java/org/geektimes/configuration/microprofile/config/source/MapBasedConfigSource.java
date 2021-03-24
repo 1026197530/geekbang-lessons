@@ -11,18 +11,33 @@ import java.util.Set;
  * 基于 Map 数据结构 {@link ConfigSource} 实现
  */
 public abstract class MapBasedConfigSource implements ConfigSource {
-
     private final String name;
 
     private final int ordinal;
 
-    private final Map<String, String> source;
+    protected  Map<String, String> source;
+//    private final String name;
+//
+//    private final int ordinal;
+//
+//    private final Map<String, String> source;
+//
+//    protected MapBasedConfigSource(String name, int ordinal) {
+//        this.name = name;
+//        this.ordinal = ordinal;
+//        this.source = getProperties();
+//    }
+protected MapBasedConfigSource(String name, int ordinal) {
+    this(name, ordinal, true);
+}
 
-    protected MapBasedConfigSource(String name, int ordinal) {
-        this.name = name;
-        this.ordinal = ordinal;
+    protected MapBasedConfigSource(String name, int ordinal, boolean eagerLoadProperties) {
+    this.name = name;
+    this.ordinal = ordinal;
+    if (eagerLoadProperties) {
         this.source = getProperties();
     }
+}
 
     /**
      * 获取配置数据 Map

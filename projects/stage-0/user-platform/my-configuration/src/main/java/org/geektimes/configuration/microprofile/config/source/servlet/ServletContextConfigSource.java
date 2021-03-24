@@ -6,13 +6,17 @@ import javax.servlet.ServletContext;
 import java.util.Enumeration;
 import java.util.Map;
 
+/**
+ * @author wangyongfei
+ */
 public class ServletContextConfigSource extends MapBasedConfigSource {
 
     private final ServletContext servletContext;
 
-    public ServletContextConfigSource(ServletContext servletContext) {
-        super("ServletContext Init Parameters", 500);
+    protected ServletContextConfigSource(ServletContext servletContext) {
+        super("ServletContext Config Source", 500, false);
         this.servletContext = servletContext;
+        super.source = getProperties();
     }
 
     @Override

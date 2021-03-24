@@ -32,6 +32,7 @@ import org.springframework.core.type.AnnotationMetadata;
  */
 public class HelloWorldImportBeanDefinitionRegistrar implements ImportBeanDefinitionRegistrar {
 
+    @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata,
                                         BeanDefinitionRegistry registry) {
         AnnotatedGenericBeanDefinition beanDefinition = new AnnotatedGenericBeanDefinition(HelloWorldConfiguration.class);
