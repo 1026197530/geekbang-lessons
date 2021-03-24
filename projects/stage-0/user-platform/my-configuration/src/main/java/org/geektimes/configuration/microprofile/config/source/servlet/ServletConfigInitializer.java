@@ -1,9 +1,10 @@
 package org.geektimes.configuration.microprofile.config.source.servlet;
 
-import javax.servlet.ServletContainerInitializer;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
+import org.geektimes.configuration.microprofile.config.source.filter.ServletConfigFilter;
+
+import javax.servlet.*;
 import javax.servlet.annotation.HandlesTypes;
+import java.util.EnumSet;
 import java.util.Set;
 @HandlesTypes(WebApplicationInitializer.class)
 public class ServletConfigInitializer implements ServletContainerInitializer {
@@ -27,5 +28,11 @@ public class ServletConfigInitializer implements ServletContainerInitializer {
                 }
 
             }
-        }
-}
+        //注册ServletConfigFilter
+        FilterRegistration.Dynamic filterRegistration = servletContext.addFilter("ServletConfigFilter", ServletConfigFilter.class);
+        filterRegistration.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType .class), true, "/*");
+
+    }
+
+
+    }

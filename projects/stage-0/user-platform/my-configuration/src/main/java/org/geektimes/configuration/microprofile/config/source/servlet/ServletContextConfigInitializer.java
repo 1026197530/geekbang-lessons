@@ -6,8 +6,6 @@ import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.geektimes.configuration.microprofile.config.DefaultConfigProviderResolver;
 
 import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
 import javax.servlet.ServletException;
 
 /**
@@ -65,8 +63,10 @@ public class ServletContextConfigInitializer implements WebApplicationInitialize
         testLoadApplicationNameFromConfig(classLoader);
 
         //将CONFIG类保存至ServletContext
-        servletContext.setAttribute("CONFIG", config);
+//        servletContext.setAttribute("CONFIG", config);
         //testLoadVersionFromConfig();
+        //将CONFIG类保存至ServletContext
+        servletContext.setAttribute("Servlet-config", config);
 
     }
 
@@ -74,6 +74,8 @@ public class ServletContextConfigInitializer implements WebApplicationInitialize
     public void testLoadApplicationNameFromConfig(ClassLoader classLoader) {
         ConfigProviderResolver configProviderResolver = DefaultConfigProviderResolver.instance();
         String value = configProviderResolver.getConfig(classLoader).getValue("application.name", String.class);
-        System.out.println("读取到配置application.name:" + value);
+//        System.out.println("读取到配置application.name:" + value);
+        System.out.println("[my-configuration模块]获取[application.name]配置值:" + value);
+
     }
 }

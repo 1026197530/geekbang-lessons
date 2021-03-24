@@ -1,22 +1,18 @@
 package org.geektimes.web.mvc;
 
 import org.apache.commons.lang.StringUtils;
+import org.geektimes.context.IContext;
 import org.geektimes.web.mvc.controller.Controller;
 import org.geektimes.web.mvc.controller.PageController;
 import org.geektimes.web.mvc.controller.RestController;
-import org.geektimes.web.mvc.header.CacheControlHeaderWriter;
-import org.geektimes.web.mvc.header.annotation.CacheControl;
-
+import org.eclipse.microprofile.config.Config;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.Path;
 import java.io.IOException;
@@ -27,7 +23,7 @@ import java.util.*;
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang.StringUtils.substringAfter;
 
-public class FrontControllerServlet extends HttpServlet {
+public class FrontControllerServlet extends HttpServlet implements IContext{
 
     /**
      * 请求路径和 Controller 的映射关系缓存
@@ -38,13 +34,23 @@ public class FrontControllerServlet extends HttpServlet {
      * 请求路径和 {@link HandlerMethodInfo} 映射关系缓存
      */
     private Map<String, HandlerMethodInfo> handleMethodInfoMapping = new HashMap<>();
-
+    /**
+     * 父容器
+     */
+    private IContext parentContainer;
     /**
      * 初始化 Servlet
      *
      * @param servletConfig
      */
     public void init(ServletConfig servletConfig) {
+        ServletContext servletContext = servletConfig.getServletContext();
+        setParentContainer((IContext) servletContext.getAttribute("org.geektimes.context.ComponentContext"));
+
+        //从ServletContext获取Config对象
+        Config config = (Config) servletContext.getAttribute("Servlet-config");
+        System.out.println("my-web-mvc模块通过ServletContext获取name配置值:" + config.getValue("application.name", String.class));
+
         initHandleMethods();
     }
 
@@ -163,6 +169,23 @@ public class FrontControllerServlet extends HttpServlet {
         }
     }
 
+    @Override
+    public <C> C getComponent(String name) {
+        C object = (C) controllersMapping.get(name);
+        if (object == null) {
+            return parentContainer.getComponent(name);
+        }
+        return object;
+    }
+
+    @Override
+    public void setParentContainer(IContext parentContainer) {
+        this.parentContainer = parentContainer;
+    }
+    @Override
+    public IContext getParentContainer() {
+        return this.parentContainer;
+    }
 //    private void beforeInvoke(Method handleMethod, HttpServletRequest request, HttpServletResponse response) {
 //
 //        CacheControl cacheControl = handleMethod.getAnnotation(CacheControl.class);
