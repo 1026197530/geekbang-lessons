@@ -52,3 +52,9 @@ compiler/.gradle/*
 TEST
 
 db
+
+# Others
+db/
+activemq-data/
+
+
