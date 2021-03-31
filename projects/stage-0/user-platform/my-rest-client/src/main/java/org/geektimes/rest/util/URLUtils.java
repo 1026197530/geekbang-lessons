@@ -181,6 +181,8 @@ public interface URLUtils {
             }
 
             resolvedTemplate.replace(start, end + 1, variableValue);
+            end = resolvedTemplate.indexOf(variableValue, start) + variableValue.length() - 1;
+
         }
 
         return resolvedTemplate.toString();

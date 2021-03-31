@@ -1,5 +1,6 @@
 package org.geektimes.projects.user.web.controller;
 
+import org.geektimes.projects.user.domain.User;
 import org.geektimes.web.mvc.controller.PageController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,5 +20,13 @@ public class HelloWorldController implements PageController {
     @Path("/world") // /hello/world -> HelloWorldController
     public String execute(HttpServletRequest request, HttpServletResponse response) throws Throwable {
         return "index.jsp";
+    }
+    @POST
+    @Path("/123/456")
+    public String testPostInvocation(){
+        User user = new User();
+        user.setEmail("zzzxxx@163.com");
+        user.setName("wyf");
+        return new User().toString();
     }
 }

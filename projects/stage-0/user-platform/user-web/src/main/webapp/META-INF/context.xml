@@ -75,4 +75,9 @@
               connectionFactoryJndiName="jms/activemq-factory"
               queueName="TEST.FOO"
     />
+
+    <Resource name="bean/RestController" auth="Container"
+              type="org.geektimes.projects.user.web.controller.RestDemoController"
+              factory="org.apache.naming.factory.BeanFactory" />
+
 </Context>
