@@ -68,7 +68,7 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
 
     private final String cacheName;
 
-    private final MutableConfiguration<K, V> configuration;
+    protected final MutableConfiguration<K, V> configuration;
 
     private final ExpiryPolicy expiryPolicy;
 
