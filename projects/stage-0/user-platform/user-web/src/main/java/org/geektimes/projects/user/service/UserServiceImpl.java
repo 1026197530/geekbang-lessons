@@ -10,6 +10,7 @@ import java.util.Collection;
 
 public class UserServiceImpl implements UserService {
 
+    // Java CDI
     @Resource(name = "bean/EntityManager")
     private EntityManager entityManager;
 
