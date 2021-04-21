@@ -59,6 +59,7 @@
         <lettuce.version>6.1.0.RELEASE</lettuce.version>
         <jedis.version>3.5.2</jedis.version>
         <netty.buffer.version>4.1.60.Final</netty.buffer.version>
+        <okhttp.version>4.9.0</okhttp.version>
         <!-- Testing 版本 -->
         <junit.version>4.13</junit.version>
 
@@ -270,6 +271,13 @@
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-dbcp</artifactId>
                 <version>${tomcat7.version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp -->
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>okhttp</artifactId>
+                <version>${okhttp.version}</version>
             </dependency>
 
             <dependency>

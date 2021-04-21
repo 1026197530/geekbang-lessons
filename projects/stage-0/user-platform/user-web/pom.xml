@@ -39,6 +39,10 @@
             <artifactId>my-cache</artifactId>
             <version>${revision}</version>
         </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+        </dependency>
 
         <!-- Servlet API -->
         <dependency>
