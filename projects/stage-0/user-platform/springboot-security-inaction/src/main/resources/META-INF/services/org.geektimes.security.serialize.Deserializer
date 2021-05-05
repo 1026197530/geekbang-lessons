@@ -1,0 +1,2 @@
+org.geektimes.security.serialize.StringDeserializer
+org.geektimes.security.serialize.LongDeserializer

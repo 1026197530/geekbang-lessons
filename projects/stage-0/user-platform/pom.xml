@@ -20,6 +20,7 @@
         <module>my-cache</module>
         <module>my-interceptor</module>
         <module>user-data</module>
+        <module>springboot-security-inaction</module>
     </modules>
 
     <properties>
