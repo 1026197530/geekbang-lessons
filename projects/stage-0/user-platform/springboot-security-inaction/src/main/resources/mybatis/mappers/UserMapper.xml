@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.geektimes.security.mapper.UserMapper">
+
+    <resultMap id="userResultMap" type="org.geektimes.security.entity.UserEntity">
+        <id property="id" column="id"/>
+        <result property="userName" column="user_name"/>
+        <result property="email" column="email"/>
+        <result property="password" column="password"/>
+    </resultMap>
+
+    <select id="getById" resultMap="userResultMap">
+        select * from t_user where id = #{id}
+    </select>
+
+</mapper>
