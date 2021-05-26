@@ -21,6 +21,7 @@
         <module>my-interceptor</module>
         <module>user-data</module>
         <module>springboot-security-inaction</module>
+        <module>my-mybatis-spring-boot-starter</module>
     </modules>
 
     <properties>
