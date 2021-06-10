@@ -22,6 +22,7 @@
         <module>user-data</module>
         <module>springboot-security-inaction</module>
         <module>my-mybatis-spring-boot-starter</module>
+        <module>spring-cloud-inaction</module>
         <module>my-mybatis-spring-boot-starter</module>
     </modules>
 

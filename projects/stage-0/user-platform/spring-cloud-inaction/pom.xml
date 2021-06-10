@@ -14,6 +14,8 @@
     <name>spring-cloud-inaction</name>
 
     <modules>
+        <module>spring-cloud-config-server-file</module>
+        <module>spring-cloud-config-client-file</module>
         <module>eureka-server</module>
     </modules>
 

@@ -10,6 +10,17 @@ spring:
         file:
           uri: file://${user.dir}/spring-cloud-inaction/spring-cloud-config-server-file/src/main/resources/META-INF/default.properties
 
+  redis:
+    cluster:
+      nodes: 127.0.0.1:6479,127.0.0.1:6480,127.0.0.1:6481
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        max-wait: -1ms
+        min-idle: 0
+      shutdown-timeout: 100ms
+
 # 配置 Eureka Client（可参考 EurekaClientConfigBean）
 # 配置 Eureka Client 示例（可参考 EurekaInstanceConfigBean）
 eureka:
