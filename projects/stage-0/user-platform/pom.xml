@@ -20,7 +20,7 @@
         <module>my-cache</module>
         <module>my-interceptor</module>
         <module>user-data</module>
-        <module>springboot-security-inaction</module>
+<!--        <module>springboot-security-inaction</module>-->
         <module>my-commons</module>
         <module>my-session</module>
         <module>spring-cloud-projects</module>
