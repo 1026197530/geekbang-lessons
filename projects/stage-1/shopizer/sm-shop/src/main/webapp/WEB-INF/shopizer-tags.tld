@@ -320,6 +320,14 @@
         <body-content>empty</body-content>
     </tag>
 
+    <tag>
+        <name>Hello</name>
+        <tag-class>com.salesmanager.shop.tags.HelloTag</tag-class>
+        <body-content>scriptless</body-content>
+        <attribute>
+            <name>message</name>
+        </attribute>
+    </tag>
 
 </taglib>
 
